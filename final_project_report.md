@@ -1,8 +1,8 @@
 # Weather Data Processing Pipeline: Final Project Report
 
-**Author:** [Your Name]  
+**Author:** Sneha Vellelath 
 **Date:** December 12, 2025  
-**Course:** Real-Time Big Data Analytics
+**Course:** Cloud Computing
 
 ---
 
