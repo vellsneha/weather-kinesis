@@ -6,7 +6,7 @@
 
 **SSH Access (if provided):**
 ```bash
-ssh -i weather-pipeline-key.pem ec2-user@YOUR_EC2_IP
+ssh -i weather-kinesis.pem ec2-user@YOUR_EC2_IP
 ```
 
 **AWS Region:** us-east-1
