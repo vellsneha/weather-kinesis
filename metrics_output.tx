@@ -1,0 +1,27 @@
+Scanning DynamoDB tables. This may take a few minutes...
+
+--- Data Collection Statistics ---
+Total Stations: 220
+Stations with Precipitation Data: 220 (100.0%)
+Stations with Temperature Data: 30 (13.6%)
+Stations with Both: 30 (13.6%)
+Total Observations Processed: 6638
+Precipitation Records Stored: 5735
+Temperature Records Stored: 903
+
+--- System Performance (Approximate) ---
+Kinesis Stream: weather-data-stream, Shards: 1
+API Requests: 25 req/s (avg), 50 req/s (peak)
+Kinesis Writes: 25 rec/s (avg), 50 rec/s (peak)
+Consumer Processing: 20 rec/s (avg), 40 rec/s (peak)
+DynamoDB Writes: 30 rec/s (avg), 60 rec/s (peak)
+
+--- Cost Estimation ---
+Kinesis Stream Cost (2 hrs): $0.03
+Kinesis PUT Requests: $0.09
+DynamoDB Writes: $0.01
+DynamoDB Storage: $0.002
+Data Transfer: $0.00
+Total Cost Estimate: $0.13
+
+--- Sample Data for Station GHCND:USC00186350 ---

@@ -24,7 +24,7 @@ HTML_TEMPLATE = """
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #e0f7fa 0%, #80deea 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -33,18 +33,18 @@ HTML_TEMPLATE = """
             margin: 0 auto;
         }
         h1 {
-            color: white;
+            color: #006064;
             text-align: center;
             margin-bottom: 30px;
             font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
         .card {
             background: white;
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         .stats {
             display: grid;
@@ -53,7 +53,7 @@ HTML_TEMPLATE = """
             margin-bottom: 30px;
         }
         .stat-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4dd0e1 0%, #00acc1 100%);
             color: white;
             padding: 20px;
             border-radius: 10px;
@@ -72,13 +72,13 @@ HTML_TEMPLATE = """
         .search-box input, .search-box select {
             width: 100%;
             padding: 12px;
-            border: 2px solid #ddd;
+            border: 2px solid #b2ebf2;
             border-radius: 8px;
             font-size: 16px;
             margin-bottom: 10px;
         }
         .search-box button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4dd0e1 0%, #00acc1 100%);
             color: white;
             border: none;
             padding: 12px 30px;
@@ -89,7 +89,7 @@ HTML_TEMPLATE = """
         }
         .search-box button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(0, 172, 193, 0.4);
         }
         table {
             width: 100%;
@@ -99,10 +99,10 @@ HTML_TEMPLATE = """
         th, td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #e0f7fa;
         }
         th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4dd0e1 0%, #00acc1 100%);
             color: white;
             font-weight: bold;
         }
