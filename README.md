@@ -2,306 +2,188 @@
 
 A complete data engineering pipeline that collects weather data from NOAA's API, streams it through AWS Kinesis, and stores it in DynamoDB for analysis.
 
-## Project Structure
+## 🎯 Quick Access
 
-```
-weather-kinesis-pipeline/
-├── README.md                 # This file
-├── requirements.txt          # Python dependencies
-├── producer.py               # NOAA data producer
-├── consumer.py               # Kinesis consumer
-├── test_producer.py          # Producer test suite
-├── query_dynamodb.py         # Query and verify data
-├── monitor_pipeline.py       # Pipeline monitoring
-└── setup/
-    ├── create_kinesis.sh     # Create Kinesis stream
-    └── create_dynamodb.sh    # Create DynamoDB tables
+**Live Dashboard:** http:// YOUR_EC2_IP :5000
+
+**SSH Access:**
+```bash
+ssh -i weather-pipeline-key.pem ec2-user@YOUR_EC2_IP
 ```
 
-## Architecture
+**AWS Region:** us-east-1
+
+**Resources:**
+- Kinesis Stream: `weather-data-stream`
+- DynamoDB Tables: `Precipitation`, `Temperature`
+
+---
+
+## 📊 What's Running
+
+This deployment includes:
+1. ✅ **Producer:** Collecting weather data from NOAA API for Maryland stations (Oct 2021)
+2. ✅ **Kinesis Stream:** Real-time data streaming pipeline
+3. ✅ **Consumer:** Processing and storing data in DynamoDB
+4. ✅ **Web Dashboard:** Visualizing the data and pipeline status
+
+---
+
+## 🏗️ Architecture
 
 ```
 NOAA API → Producer (EC2) → Kinesis Stream → Consumer (EC2) → DynamoDB
-                                                                ├─ Precipitation Table
-                                                                └─ Temperature Table
+                                                                ├─ Precipitation
+                                                                └─ Temperature
+                                 ↓
+                         Web Dashboard (Flask)
 ```
 
-## Prerequisites
+**Data Flow:**
+1. Producer queries NOAA API for Maryland weather stations
+2. Processes and formats data (groups by date, converts units)
+3. Sends records to Kinesis stream
+4. Consumer reads from Kinesis
+5. Splits data into precipitation and temperature records
+6. Stores in appropriate DynamoDB tables
 
-1. **AWS Account** with appropriate permissions
-2. **NOAA API Token** - Get from https://www.ncdc.noaa.gov/cdo-web/token
-3. **Python 3.7+**
-4. **AWS CLI configured** with credentials
+---
 
-## Setup Instructions
+## 🖥️ Viewing the Results
 
-### 1. Install Dependencies
+### Option 1: Web Dashboard (Easiest)
+
+Visit: **http:// YOUR_EC2_IP :5000**
+
+The dashboard shows:
+- Pipeline statistics (number of stations, records processed)
+- Real-time data queries by station
+- Sample weather data with temperature and precipitation
+
+### Option 2: AWS Console
+
+1. **DynamoDB Tables:**
+   - Go to: https://console.aws.amazon.com/dynamodb/
+   - Tables: `Precipitation` and `Temperature`
+   - Click "Explore items" to see data
+
+2. **Kinesis Stream:**
+   - Go to: https://console.aws.amazon.com/kinesis/
+   - Stream: `weather-data-stream`
+   - View monitoring metrics
+
+### Option 3: Command Line (via SSH)
 
 ```bash
-pip install -r requirements.txt
+# SSH into the instance
+ssh -i weather-pipeline-key.pem ec2-user@YOUR_EC2_IP
+
+# Check pipeline status
+cd ~/weather-pipeline
+tail -f producer.log    # See producer progress
+tail -f consumer.log    # See consumer processing
+
+# Query data directly
+python3 query_dynamodb.py
+
+# Check monitoring stats
+python3 monitor_pipeline.py
 ```
 
-### 2. Create AWS Resources
+---
 
-**Create Kinesis Stream:**
+## 🔍 Verification Steps
+
+To verify the pipeline is working:
+
+### 1. Check Data in DynamoDB
+
 ```bash
-aws kinesis create-stream \
-    --stream-name weather-data-stream \
-    --shard-count 1
+# Via AWS CLI
+aws dynamodb scan --table-name Precipitation --select COUNT --region us-east-1
+aws dynamodb scan --table-name Temperature --select COUNT --region us-east-1
+
+# Should show increasing record counts
 ```
 
-**Create DynamoDB Tables:**
-```bash
-# Precipitation table
-aws dynamodb create-table \
-    --table-name Precipitation \
-    --attribute-definitions \
-        AttributeName=station_id,AttributeType=S \
-        AttributeName=timestamp,AttributeType=S \
-    --key-schema \
-        AttributeName=station_id,KeyType=HASH \
-        AttributeName=timestamp,KeyType=RANGE \
-    --billing-mode PAY_PER_REQUEST
+### 2. Sample Query
 
-# Temperature table
-aws dynamodb create-table \
+```bash
+# Get data for a specific station
+aws dynamodb query \
     --table-name Temperature \
-    --attribute-definitions \
-        AttributeName=station_id,AttributeType=S \
-        AttributeName=timestamp,AttributeType=S \
-    --key-schema \
-        AttributeName=station_id,KeyType=HASH \
-        AttributeName=timestamp,KeyType=RANGE \
-    --billing-mode PAY_PER_REQUEST
+    --key-condition-expression "station_id = :sid" \
+    --expression-attribute-values '{":sid":{"S":"GHCND:USC00186350"}}' \
+    --region us-east-1
 ```
 
-### 3. Configure Credentials
-
-**Option A: Environment Variables**
-```bash
-export AWS_ACCESS_KEY_ID=your_access_key
-export AWS_SECRET_ACCESS_KEY=your_secret_key
-export AWS_DEFAULT_REGION=us-east-1
-```
-
-**Option B: AWS CLI Configuration**
-```bash
-aws configure
-```
-
-### 4. Update Configuration
-
-Edit `producer.py` and `consumer.py` to set:
-- `NOAA_TOKEN`: Your NOAA API token
-- `AWS_REGION`: Your AWS region
-- `KINESIS_STREAM_NAME`: Your stream name
-
-## Running the Pipeline
-
-### Step 1: Test the Producer
+### 3. Check Kinesis Metrics
 
 ```bash
-python test_producer.py
+aws kinesis describe-stream-summary \
+    --stream-name weather-data-stream \
+    --region us-east-1
 ```
 
-This will verify:
-- API connectivity
-- Kinesis connection
-- Data retrieval
+---
 
-### Step 2: Run the Producer
+## 📈 Expected Results
 
-```bash
-python producer.py
-```
+After running for 1-2 hours:
+- **Stations processed:** ~245 Maryland weather stations
+- **Precipitation records:** ~3,000-5,000 records
+- **Temperature records:** ~2,500-4,000 records
+- **Date range:** October 1-31, 2021
 
-This will:
-- Fetch all Maryland weather stations
-- Retrieve weather data for October 2021
-- Stream records to Kinesis
+**Note:** Not all stations have data for all dates. This is expected behavior.
 
-**Expected output:**
-```
-2024-01-15 10:00:00 - INFO - Starting weather data collection from 2021-10-01 to 2021-10-31
-2024-01-15 10:00:01 - INFO - Fetching Maryland weather stations...
-2024-01-15 10:00:05 - INFO - Total stations found: 245
-2024-01-15 10:00:10 - INFO - Processing station 1/245: GHCND:USC00186350
-...
-```
+---
 
-### Step 3: Run the Consumer
+## 💰 Cost Estimate
 
-In a separate terminal:
+For this deployment running 2-3 hours:
+- EC2 t2.micro: ~$0.012/hour × 3 hours = $0.036
+- Kinesis (on-demand): ~$0.015 per million payload units ≈ $0.10
+- DynamoDB (on-demand): ~$1.25 per million writes ≈ $0.05
+- **Total: < $0.25** for complete demonstration
 
-```bash
-python consumer.py
-```
+---
 
-This will:
-- Read records from Kinesis
-- Process weather data
-- Store in DynamoDB tables
+## 🛠️ Troubleshooting
 
-**Expected output:**
-```
-2024-01-15 10:05:00 - INFO - Starting consumer for stream: weather-data-stream
-2024-01-15 10:05:01 - INFO - Found 1 shards in stream
-2024-01-15 10:05:05 - INFO - Retrieved 100 records from shard shardId-000000000000
-...
-```
+### Dashboard not loading?
+- Check security group allows port 5000
+- Verify dashboard is running: `ps aux | grep dashboard`
+- Check logs: `tail -f ~/weather-pipeline/dashboard.log`
 
-### Step 4: Verify Data
+### No data in tables?
+- Check producer is running: `ps aux | grep producer`
+- View producer logs: `tail -f ~/weather-pipeline/producer.log`
+- Producer needs 1-2 hours to collect all data
 
-```bash
-python query_dynamodb.py
-```
+### Consumer errors?
+- Check consumer logs: `tail -f ~/weather-pipeline/consumer.log`
+- Verify IAM role has DynamoDB permissions
 
-This will show:
-- Table statistics
-- Sample records
-- Available stations
+---
 
-### Step 5: Monitor Pipeline
+## 🧹 Cleanup (After Grading)
 
-```bash
-python monitor_pipeline.py
-```
-
-This displays:
-- Stream status
-- Metrics (records processed, throughput)
-- Consumer lag
-- Table statistics
-
-## Data Schema
-
-### Precipitation Table
-
-| Field | Type | Description |
-|-------|------|-------------|
-| station_id (PK) | String | Weather station identifier |
-| timestamp (SK) | String | ISO 8601 timestamp |
-| station_name | String | Human-readable station name |
-| precipitation_mm | Number | Precipitation in millimeters |
-| snowfall_mm | Number | Snowfall in millimeters |
-
-### Temperature Table
-
-| Field | Type | Description |
-|-------|------|-------------|
-| station_id (PK) | String | Weather station identifier |
-| timestamp (SK) | String | ISO 8601 timestamp |
-| station_name | String | Human-readable station name |
-| temp_max_c | Number | Maximum temperature (Celsius) |
-| temp_min_c | Number | Minimum temperature (Celsius) |
-| temp_obs_c | Number | Observed temperature (Celsius) |
-
-## Querying Data
-
-### Query by Station
-
-```python
-import boto3
-from boto3.dynamodb.conditions import Key
-
-dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-table = dynamodb.Table('Temperature')
-
-response = table.query(
-    KeyConditionExpression=Key('station_id').eq('GHCND:USC00186350')
-)
-
-for item in response['Items']:
-    print(f"{item['timestamp']}: {item.get('temp_max_c')}°C")
-```
-
-### Query by Date Range
-
-```python
-from boto3.dynamodb.conditions import Key
-
-response = table.query(
-    KeyConditionExpression=
-        Key('station_id').eq('GHCND:USC00186350') &
-        Key('timestamp').between('2021-10-01', '2021-10-15')
-)
-```
-
-## Troubleshooting
-
-### Producer Issues
-
-**Problem:** API rate limit errors
-- **Solution:** NOAA allows 5 requests/second. The code includes delays, but you may need to increase them.
-
-**Problem:** No data for certain stations
-- **Solution:** Not all stations have data for October 2021. This is expected.
-
-**Problem:** Authentication errors
-- **Solution:** Verify your NOAA API token is correct and active.
-
-### Consumer Issues
-
-**Problem:** Consumer falling behind
-- **Solution:** Increase shard count or optimize processing logic.
-
-**Problem:** DynamoDB throttling
-- **Solution:** Use PAY_PER_REQUEST billing mode or increase provisioned capacity.
-
-### AWS Issues
-
-**Problem:** Access denied errors
-- **Solution:** Ensure IAM role/user has necessary permissions:
-  - `kinesis:PutRecord`
-  - `kinesis:GetRecords`
-  - `dynamodb:PutItem`
-
-## Performance Optimization
-
-### For Large-Scale Processing
-
-1. **Increase Kinesis Shards:**
-   ```bash
-   aws kinesis update-shard-count \
-       --stream-name weather-data-stream \
-       --target-shard-count 4 \
-       --scaling-type UNIFORM_SCALING
-   ```
-
-2. **Batch Processing:**
-   - Use `put_records` instead of `put_record`
-   - Process multiple records in parallel
-
-3. **DynamoDB Optimization:**
-   - Use batch write operations
-   - Enable DynamoDB Streams for downstream processing
-
-## Cost Estimation
-
-For this project (October 2021 data):
-- **Kinesis:** ~$0.01-0.10 (depends on data volume)
-- **DynamoDB:** ~$0.25-1.00 (on-demand pricing)
-- **EC2:** Free tier eligible or ~$0.01/hour
-- **Total:** Less than $2 for one-time run
-
-## Cleanup
-
-To avoid ongoing charges:
+To avoid ongoing charges, delete resources:
 
 ```bash
 # Delete Kinesis stream
-aws kinesis delete-stream --stream-name weather-data-stream
+aws kinesis delete-stream --stream-name weather-data-stream --region us-east-1
 
 # Delete DynamoDB tables
-aws dynamodb delete-table --table-name Precipitation
-aws dynamodb delete-table --table-name Temperature
+aws dynamodb delete-table --table-name Precipitation --region us-east-1
+aws dynamodb delete-table --table-name Temperature --region us-east-1
+
+# Terminate EC2 instance
+aws ec2 terminate-instances --instance-ids i-xxxxxxxxxxxxx --region us-east-1
 ```
 
-## Additional Resources
-
-- [AWS Kinesis Documentation](https://docs.aws.amazon.com/kinesis/)
-- [NOAA API Documentation](https://www.ncdc.noaa.gov/cdo-web/webservices/v2)
-- [DynamoDB Best Practices](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html)
+---
 
 ## License
 
