@@ -152,26 +152,25 @@ For this deployment running 2-3 hours:
 ### Dashboard not loading?
 - Check security group allows port 5000
 - Verify dashboard is running: `ps aux | grep dashboard`
-- Check logs: `tail -f ~/weather-pipeline/dashboard.log`
+- Check logs: `tail -f ~/weatherkinesis/dashboard.log`
 
 ### No data in tables?
 - Check producer is running: `ps aux | grep producer`
-- View producer logs: `tail -f ~/weather-pipeline/producer.log`
+- View producer logs: `tail -f ~/weatherkinesis/producer.log`
 - Producer needs 1-2 hours to collect all data
 
 ### Consumer errors?
-- Check consumer logs: `tail -f ~/weather-pipeline/consumer.log`
+- Check consumer logs: `tail -f ~/weatherkinesis/consumer.log`
 - Verify IAM role has DynamoDB permissions
 
 ---
 
 ## 📞 Contact
 
-**Student:** [Your Name]
-**Email:** [Your Email]
-**Course:** [Course Number]
+**Student:** [Sneha Vellelath]
+**Email:** [velsneha@umd.edu]
 
-**Source Code:** [GitHub URL if you have one]
+
 
 ---
 
