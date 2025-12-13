@@ -3,7 +3,7 @@
 A complete data engineering pipeline that collects weather data from NOAA's API, streams it through AWS Kinesis, and stores it in DynamoDB for analysis.
 
 ## 🎯 Quick Access
-
+YOUR_EC2_IP = 98.84.170.156
 **Live Dashboard:** http:// YOUR_EC2_IP :5000
 
 **SSH Access:**
