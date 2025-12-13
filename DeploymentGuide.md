@@ -6,7 +6,7 @@
 
 **SSH Access (if provided):**
 ```bash
-ssh -i weather-pipeline-key.pem ec2-user@YOUR_EC2_IP
+ssh -i weather-kinesis.pem ec2-user@YOUR_EC2_IP
 ```
 
 **AWS Region:** us-east-1
@@ -54,10 +54,10 @@ The dashboard shows:
 
 ```bash
 # SSH into the instance
-ssh -i weather-pipeline-key.pem ec2-user@YOUR_EC2_IP
+ssh -i weather-kinesis.pem ec2-user@YOUR_EC2_IP
 
 # Check pipeline status
-cd ~/weather-pipeline
+cd ~/weatherkinesis
 tail -f producer.log    # See producer progress
 tail -f consumer.log    # See consumer processing
 
@@ -152,26 +152,25 @@ For this deployment running 2-3 hours:
 ### Dashboard not loading?
 - Check security group allows port 5000
 - Verify dashboard is running: `ps aux | grep dashboard`
-- Check logs: `tail -f ~/weather-pipeline/dashboard.log`
+- Check logs: `tail -f ~/weatherkinesis/dashboard.log`
 
 ### No data in tables?
 - Check producer is running: `ps aux | grep producer`
-- View producer logs: `tail -f ~/weather-pipeline/producer.log`
+- View producer logs: `tail -f ~/weatherkinesis/producer.log`
 - Producer needs 1-2 hours to collect all data
 
 ### Consumer errors?
-- Check consumer logs: `tail -f ~/weather-pipeline/consumer.log`
+- Check consumer logs: `tail -f ~/weatherkinesis/consumer.log`
 - Verify IAM role has DynamoDB permissions
 
 ---
 
 ## 📞 Contact
 
-**Student:** [Your Name]
-**Email:** [Your Email]
-**Course:** [Course Number]
+**Student:** [Sneha Vellelath]
+**Email:** [velsneha@umd.edu]
 
-**Source Code:** [GitHub URL if you have one]
+
 
 ---
 
