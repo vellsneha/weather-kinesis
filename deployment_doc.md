@@ -54,10 +54,10 @@ The dashboard shows:
 
 ```bash
 # SSH into the instance
-ssh -i weather-pipeline-key.pem ec2-user@YOUR_EC2_IP
+ssh -i weather-kinesis.pem ec2-user@YOUR_EC2_IP
 
 # Check pipeline status
-cd ~/weather-pipeline
+cd ~/weatherkinesis
 tail -f producer.log    # See producer progress
 tail -f consumer.log    # See consumer processing
 
