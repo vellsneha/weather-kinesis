@@ -51,7 +51,7 @@ NOAA API → Producer (EC2) → Kinesis Stream → Consumer (EC2) → DynamoDB
 
 ## 🖥️ Viewing the Results
 
-### Option 1: Web Dashboard (Easiest)
+### Web Dashboard (Easiest)
 
 Visit: **http:// YOUR_EC2_IP :5000**
 
@@ -60,7 +60,7 @@ The dashboard shows:
 - Real-time data queries by station
 - Sample weather data with temperature and precipitation
 
-### Option 2: AWS Console
+### AWS Console
 
 1. **DynamoDB Tables:**
    - Go to: https://console.aws.amazon.com/dynamodb/
@@ -72,7 +72,7 @@ The dashboard shows:
    - Stream: `weather-data-stream`
    - View monitoring metrics
 
-### Option 3: Command Line (via SSH)
+### Command Line (via SSH)
 
 ```bash
 # SSH into the instance
@@ -187,8 +187,5 @@ aws ec2 terminate-instances --instance-ids i-xxxxxxxxxxxxx --region us-east-1
 
 ## License
 
-This project is for educational purposes.
+This project is a part of Cloud Computing Coursework.
 
-## Author
-
-Created as part of AWS data engineering coursework.
