@@ -19,7 +19,7 @@ ssh -i weather-kinesis.pem ec2-user@YOUR_EC2_IP
 
 ---
 
-## 📊 What's Running
+## What's Running
 
 This deployment includes:
 1. **Producer:** Collecting weather data from NOAA API for Maryland stations (Oct 2021)
