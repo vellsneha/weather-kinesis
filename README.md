@@ -2,7 +2,7 @@
 
 A complete data engineering pipeline that collects weather data from NOAA's API, streams it through AWS Kinesis, and stores it in DynamoDB for analysis.
 
-## 🎯 Quick Access
+## Quick Access
 YOUR_EC2_IP = 98.84.170.156
 **Live Dashboard:** http:// YOUR_EC2_IP :5000
 
@@ -22,14 +22,14 @@ ssh -i weather-kinesis.pem ec2-user@YOUR_EC2_IP
 ## 📊 What's Running
 
 This deployment includes:
-1. ✅ **Producer:** Collecting weather data from NOAA API for Maryland stations (Oct 2021)
-2. ✅ **Kinesis Stream:** Real-time data streaming pipeline
-3. ✅ **Consumer:** Processing and storing data in DynamoDB
-4. ✅ **Web Dashboard:** Visualizing the data and pipeline status
+1. **Producer:** Collecting weather data from NOAA API for Maryland stations (Oct 2021)
+2. **Kinesis Stream:** Real-time data streaming pipeline
+3. **Consumer:** Processing and storing data in DynamoDB
+4. **Web Dashboard:** Visualizing the data and pipeline status
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 NOAA API → Producer (EC2) → Kinesis Stream → Consumer (EC2) → DynamoDB
@@ -49,7 +49,7 @@ NOAA API → Producer (EC2) → Kinesis Stream → Consumer (EC2) → DynamoDB
 
 ---
 
-## 🖥️ Viewing the Results
+## Viewing the Results
 
 ### Web Dashboard (Easiest)
 
@@ -92,7 +92,7 @@ python3 monitor_pipeline.py
 
 ---
 
-## 🔍 Verification Steps
+## Verification Steps
 
 To verify the pipeline is working:
 
@@ -127,7 +127,7 @@ aws kinesis describe-stream-summary \
 
 ---
 
-## 📈 Expected Results
+## Expected Results
 
 After running for 1-2 hours:
 - **Stations processed:** ~245 Maryland weather stations
@@ -139,7 +139,7 @@ After running for 1-2 hours:
 
 ---
 
-## 💰 Cost Estimate
+## Cost Estimate
 
 For this deployment running 2-3 hours:
 - EC2 t2.micro: ~$0.012/hour × 3 hours = $0.036
@@ -149,7 +149,7 @@ For this deployment running 2-3 hours:
 
 ---
 
-## 🛠️ Troubleshooting
+## Troubleshooting
 
 ### Dashboard not loading?
 - Check security group allows port 5000
@@ -167,7 +167,7 @@ For this deployment running 2-3 hours:
 
 ---
 
-## 🧹 Cleanup (After Grading)
+## Cleanup (After Grading)
 
 To avoid ongoing charges, delete resources:
 
